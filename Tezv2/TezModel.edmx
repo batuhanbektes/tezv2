@@ -1,0 +1,493 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DbHatDengelemeKDSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Tbl_CozumDetaylari">
+          <Key>
+            <PropertyRef Name="DetayID" />
+          </Key>
+          <Property Name="DetayID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CozumID" Type="int" Nullable="false" />
+          <Property Name="IstasyonNo" Type="int" Nullable="false" />
+          <Property Name="OperasyonID" Type="int" Nullable="false" />
+          <Property Name="SiraNo" Type="int" Nullable="false" />
+          <Property Name="IstasyonYuku" Type="float" />
+        </EntityType>
+        <EntityType Name="Tbl_Cozumler">
+          <Key>
+            <PropertyRef Name="CozumID" />
+          </Key>
+          <Property Name="CozumID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjeID" Type="int" Nullable="false" />
+          <Property Name="AlgoritmaAdi" Type="nvarchar" MaxLength="50" />
+          <Property Name="PopulasyonBuyuklugu" Type="int" />
+          <Property Name="IterasyonSayisi" Type="int" />
+          <Property Name="CaprazlamaOrani" Type="float" />
+          <Property Name="MutasyonOrani" Type="float" />
+          <Property Name="HedefCevrimSuresi" Type="float" />
+          <Property Name="HatVerimliligi" Type="float" />
+          <Property Name="PuruzsuzlukIndeksi" Type="float" />
+          <Property Name="IstasyonSayisi" Type="int" />
+          <Property Name="HesaplamaSuresiMS" Type="int" />
+          <Property Name="CozumTarihi" Type="datetime" />
+          <Property Name="Fitness" Type="float" />
+          <Property Name="DurdurmaKriteri" Type="nvarchar" MaxLength="20" />
+          <Property Name="UygunlukLimiti" Type="int" />
+        </EntityType>
+        <EntityType Name="Tbl_Oncelikler">
+          <Key>
+            <PropertyRef Name="IliskiID" />
+          </Key>
+          <Property Name="IliskiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OperasyonID" Type="int" Nullable="false" />
+          <Property Name="OnculOperasyonID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tbl_Operasyonlar">
+          <Key>
+            <PropertyRef Name="OperasyonID" />
+          </Key>
+          <Property Name="OperasyonID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjeID" Type="int" Nullable="false" />
+          <Property Name="OperasyonKodu" Type="nvarchar" MaxLength="20" />
+          <Property Name="Tanim" Type="nvarchar" MaxLength="150" />
+          <Property Name="Sure" Type="float" Nullable="false" />
+          <Property Name="Aciklama" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="Tbl_Projeler">
+          <Key>
+            <PropertyRef Name="ProjeID" />
+          </Key>
+          <Property Name="ProjeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProjeAdi" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Aciklama" Type="nvarchar" MaxLength="250" />
+          <Property Name="OlusturmaTarihi" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_Cozum_Proje">
+          <End Role="Tbl_Projeler" Type="Self.Tbl_Projeler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Cozumler" Type="Self.Tbl_Cozumler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Projeler">
+              <PropertyRef Name="ProjeID" />
+            </Principal>
+            <Dependent Role="Tbl_Cozumler">
+              <PropertyRef Name="ProjeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Detay_Cozum">
+          <End Role="Tbl_Cozumler" Type="Self.Tbl_Cozumler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_CozumDetaylari" Type="Self.Tbl_CozumDetaylari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Cozumler">
+              <PropertyRef Name="CozumID" />
+            </Principal>
+            <Dependent Role="Tbl_CozumDetaylari">
+              <PropertyRef Name="CozumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Detay_Operasyon">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1" />
+          <End Role="Tbl_CozumDetaylari" Type="Self.Tbl_CozumDetaylari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_CozumDetaylari">
+              <PropertyRef Name="OperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Oncelik_AnaIs">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Oncelikler" Type="Self.Tbl_Oncelikler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_Oncelikler">
+              <PropertyRef Name="OperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Oncelik_OncuIs">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1" />
+          <End Role="Tbl_Oncelikler" Type="Self.Tbl_Oncelikler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_Oncelikler">
+              <PropertyRef Name="OnculOperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operasyon_Proje">
+          <End Role="Tbl_Projeler" Type="Self.Tbl_Projeler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Projeler">
+              <PropertyRef Name="ProjeID" />
+            </Principal>
+            <Dependent Role="Tbl_Operasyonlar">
+              <PropertyRef Name="ProjeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DbHatDengelemeKDSModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_CozumDetaylari" EntityType="Self.Tbl_CozumDetaylari" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Cozumler" EntityType="Self.Tbl_Cozumler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Oncelikler" EntityType="Self.Tbl_Oncelikler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Operasyonlar" EntityType="Self.Tbl_Operasyonlar" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Projeler" EntityType="Self.Tbl_Projeler" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Cozum_Proje" Association="Self.FK_Cozum_Proje">
+            <End Role="Tbl_Projeler" EntitySet="Tbl_Projeler" />
+            <End Role="Tbl_Cozumler" EntitySet="Tbl_Cozumler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Detay_Cozum" Association="Self.FK_Detay_Cozum">
+            <End Role="Tbl_Cozumler" EntitySet="Tbl_Cozumler" />
+            <End Role="Tbl_CozumDetaylari" EntitySet="Tbl_CozumDetaylari" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Detay_Operasyon" Association="Self.FK_Detay_Operasyon">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_CozumDetaylari" EntitySet="Tbl_CozumDetaylari" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Oncelik_AnaIs" Association="Self.FK_Oncelik_AnaIs">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_Oncelikler" EntitySet="Tbl_Oncelikler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Oncelik_OncuIs" Association="Self.FK_Oncelik_OncuIs">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_Oncelikler" EntitySet="Tbl_Oncelikler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operasyon_Proje" Association="Self.FK_Operasyon_Proje">
+            <End Role="Tbl_Projeler" EntitySet="Tbl_Projeler" />
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DbHatDengelemeKDSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Tbl_CozumDetaylari">
+          <Key>
+            <PropertyRef Name="DetayID" />
+          </Key>
+          <Property Name="DetayID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CozumID" Type="Int32" Nullable="false" />
+          <Property Name="IstasyonNo" Type="Int32" Nullable="false" />
+          <Property Name="OperasyonID" Type="Int32" Nullable="false" />
+          <Property Name="SiraNo" Type="Int32" Nullable="false" />
+          <Property Name="IstasyonYuku" Type="Double" />
+          <NavigationProperty Name="Tbl_Cozumler" Relationship="Self.FK_Detay_Cozum" FromRole="Tbl_CozumDetaylari" ToRole="Tbl_Cozumler" />
+          <NavigationProperty Name="Tbl_Operasyonlar" Relationship="Self.FK_Detay_Operasyon" FromRole="Tbl_CozumDetaylari" ToRole="Tbl_Operasyonlar" />
+        </EntityType>
+        <EntityType Name="Tbl_Cozumler">
+          <Key>
+            <PropertyRef Name="CozumID" />
+          </Key>
+          <Property Name="CozumID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjeID" Type="Int32" Nullable="false" />
+          <Property Name="AlgoritmaAdi" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PopulasyonBuyuklugu" Type="Int32" />
+          <Property Name="IterasyonSayisi" Type="Int32" />
+          <Property Name="CaprazlamaOrani" Type="Double" />
+          <Property Name="MutasyonOrani" Type="Double" />
+          <Property Name="HedefCevrimSuresi" Type="Double" />
+          <Property Name="HatVerimliligi" Type="Double" />
+          <Property Name="PuruzsuzlukIndeksi" Type="Double" />
+          <Property Name="IstasyonSayisi" Type="Int32" />
+          <Property Name="HesaplamaSuresiMS" Type="Int32" />
+          <Property Name="CozumTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Tbl_CozumDetaylari" Relationship="Self.FK_Detay_Cozum" FromRole="Tbl_Cozumler" ToRole="Tbl_CozumDetaylari" />
+          <NavigationProperty Name="Tbl_Projeler" Relationship="Self.FK_Cozum_Proje" FromRole="Tbl_Cozumler" ToRole="Tbl_Projeler" />
+          <Property Name="Fitness" Type="Double" />
+          <Property Name="DurdurmaKriteri" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UygunlukLimiti" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Tbl_Oncelikler">
+          <Key>
+            <PropertyRef Name="IliskiID" />
+          </Key>
+          <Property Name="IliskiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OperasyonID" Type="Int32" Nullable="false" />
+          <Property Name="OnculOperasyonID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tbl_Operasyonlar" Relationship="Self.FK_Oncelik_AnaIs" FromRole="Tbl_Oncelikler" ToRole="Tbl_Operasyonlar" />
+          <NavigationProperty Name="Tbl_Operasyonlar1" Relationship="Self.FK_Oncelik_OncuIs" FromRole="Tbl_Oncelikler" ToRole="Tbl_Operasyonlar" />
+        </EntityType>
+        <EntityType Name="Tbl_Operasyonlar">
+          <Key>
+            <PropertyRef Name="OperasyonID" />
+          </Key>
+          <Property Name="OperasyonID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjeID" Type="Int32" Nullable="false" />
+          <Property Name="OperasyonKodu" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Tanim" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Sure" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Tbl_CozumDetaylari" Relationship="Self.FK_Detay_Operasyon" FromRole="Tbl_Operasyonlar" ToRole="Tbl_CozumDetaylari" />
+          <NavigationProperty Name="Tbl_Oncelikler" Relationship="Self.FK_Oncelik_AnaIs" FromRole="Tbl_Operasyonlar" ToRole="Tbl_Oncelikler" />
+          <NavigationProperty Name="Tbl_Oncelikler1" Relationship="Self.FK_Oncelik_OncuIs" FromRole="Tbl_Operasyonlar" ToRole="Tbl_Oncelikler" />
+          <NavigationProperty Name="Tbl_Projeler" Relationship="Self.FK_Operasyon_Proje" FromRole="Tbl_Operasyonlar" ToRole="Tbl_Projeler" />
+          <Property Name="Aciklama" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Tbl_Projeler">
+          <Key>
+            <PropertyRef Name="ProjeID" />
+          </Key>
+          <Property Name="ProjeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProjeAdi" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Aciklama" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="OlusturmaTarihi" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Tbl_Cozumler" Relationship="Self.FK_Cozum_Proje" FromRole="Tbl_Projeler" ToRole="Tbl_Cozumler" />
+          <NavigationProperty Name="Tbl_Operasyonlar" Relationship="Self.FK_Operasyon_Proje" FromRole="Tbl_Projeler" ToRole="Tbl_Operasyonlar" />
+        </EntityType>
+        <Association Name="FK_Detay_Cozum">
+          <End Role="Tbl_Cozumler" Type="Self.Tbl_Cozumler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_CozumDetaylari" Type="Self.Tbl_CozumDetaylari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Cozumler">
+              <PropertyRef Name="CozumID" />
+            </Principal>
+            <Dependent Role="Tbl_CozumDetaylari">
+              <PropertyRef Name="CozumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Detay_Operasyon">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1" />
+          <End Role="Tbl_CozumDetaylari" Type="Self.Tbl_CozumDetaylari" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_CozumDetaylari">
+              <PropertyRef Name="OperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Cozum_Proje">
+          <End Role="Tbl_Projeler" Type="Self.Tbl_Projeler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Cozumler" Type="Self.Tbl_Cozumler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Projeler">
+              <PropertyRef Name="ProjeID" />
+            </Principal>
+            <Dependent Role="Tbl_Cozumler">
+              <PropertyRef Name="ProjeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Oncelik_AnaIs">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Oncelikler" Type="Self.Tbl_Oncelikler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_Oncelikler">
+              <PropertyRef Name="OperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Oncelik_OncuIs">
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="1" />
+          <End Role="Tbl_Oncelikler" Type="Self.Tbl_Oncelikler" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Operasyonlar">
+              <PropertyRef Name="OperasyonID" />
+            </Principal>
+            <Dependent Role="Tbl_Oncelikler">
+              <PropertyRef Name="OnculOperasyonID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Operasyon_Proje">
+          <End Role="Tbl_Projeler" Type="Self.Tbl_Projeler" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Operasyonlar" Type="Self.Tbl_Operasyonlar" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Projeler">
+              <PropertyRef Name="ProjeID" />
+            </Principal>
+            <Dependent Role="Tbl_Operasyonlar">
+              <PropertyRef Name="ProjeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DbHatDengelemeKDSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Tbl_CozumDetaylari" EntityType="Self.Tbl_CozumDetaylari" />
+          <EntitySet Name="Tbl_Cozumler" EntityType="Self.Tbl_Cozumler" />
+          <EntitySet Name="Tbl_Oncelikler" EntityType="Self.Tbl_Oncelikler" />
+          <EntitySet Name="Tbl_Operasyonlar" EntityType="Self.Tbl_Operasyonlar" />
+          <EntitySet Name="Tbl_Projeler" EntityType="Self.Tbl_Projeler" />
+          <AssociationSet Name="FK_Detay_Cozum" Association="Self.FK_Detay_Cozum">
+            <End Role="Tbl_Cozumler" EntitySet="Tbl_Cozumler" />
+            <End Role="Tbl_CozumDetaylari" EntitySet="Tbl_CozumDetaylari" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Detay_Operasyon" Association="Self.FK_Detay_Operasyon">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_CozumDetaylari" EntitySet="Tbl_CozumDetaylari" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Cozum_Proje" Association="Self.FK_Cozum_Proje">
+            <End Role="Tbl_Projeler" EntitySet="Tbl_Projeler" />
+            <End Role="Tbl_Cozumler" EntitySet="Tbl_Cozumler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Oncelik_AnaIs" Association="Self.FK_Oncelik_AnaIs">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_Oncelikler" EntitySet="Tbl_Oncelikler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Oncelik_OncuIs" Association="Self.FK_Oncelik_OncuIs">
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+            <End Role="Tbl_Oncelikler" EntitySet="Tbl_Oncelikler" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Operasyon_Proje" Association="Self.FK_Operasyon_Proje">
+            <End Role="Tbl_Projeler" EntitySet="Tbl_Projeler" />
+            <End Role="Tbl_Operasyonlar" EntitySet="Tbl_Operasyonlar" />
+          </AssociationSet>
+          <EntitySet Name="sysdiagrams" EntityType="DbHatDengelemeKDSModel.sysdiagrams" />
+        </EntityContainer>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DbHatDengelemeKDSModelStoreContainer" CdmEntityContainer="DbHatDengelemeKDSEntities">
+          <EntitySetMapping Name="Tbl_CozumDetaylari">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.Tbl_CozumDetaylari">
+              <MappingFragment StoreEntitySet="Tbl_CozumDetaylari">
+                <ScalarProperty Name="DetayID" ColumnName="DetayID" />
+                <ScalarProperty Name="CozumID" ColumnName="CozumID" />
+                <ScalarProperty Name="IstasyonNo" ColumnName="IstasyonNo" />
+                <ScalarProperty Name="OperasyonID" ColumnName="OperasyonID" />
+                <ScalarProperty Name="SiraNo" ColumnName="SiraNo" />
+                <ScalarProperty Name="IstasyonYuku" ColumnName="IstasyonYuku" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Cozumler">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.Tbl_Cozumler">
+              <MappingFragment StoreEntitySet="Tbl_Cozumler">
+                <ScalarProperty Name="UygunlukLimiti" ColumnName="UygunlukLimiti" />
+                <ScalarProperty Name="DurdurmaKriteri" ColumnName="DurdurmaKriteri" />
+                <ScalarProperty Name="Fitness" ColumnName="Fitness" />
+                <ScalarProperty Name="CozumID" ColumnName="CozumID" />
+                <ScalarProperty Name="ProjeID" ColumnName="ProjeID" />
+                <ScalarProperty Name="AlgoritmaAdi" ColumnName="AlgoritmaAdi" />
+                <ScalarProperty Name="PopulasyonBuyuklugu" ColumnName="PopulasyonBuyuklugu" />
+                <ScalarProperty Name="IterasyonSayisi" ColumnName="IterasyonSayisi" />
+                <ScalarProperty Name="CaprazlamaOrani" ColumnName="CaprazlamaOrani" />
+                <ScalarProperty Name="MutasyonOrani" ColumnName="MutasyonOrani" />
+                <ScalarProperty Name="HedefCevrimSuresi" ColumnName="HedefCevrimSuresi" />
+                <ScalarProperty Name="HatVerimliligi" ColumnName="HatVerimliligi" />
+                <ScalarProperty Name="PuruzsuzlukIndeksi" ColumnName="PuruzsuzlukIndeksi" />
+                <ScalarProperty Name="IstasyonSayisi" ColumnName="IstasyonSayisi" />
+                <ScalarProperty Name="HesaplamaSuresiMS" ColumnName="HesaplamaSuresiMS" />
+                <ScalarProperty Name="CozumTarihi" ColumnName="CozumTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Oncelikler">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.Tbl_Oncelikler">
+              <MappingFragment StoreEntitySet="Tbl_Oncelikler">
+                <ScalarProperty Name="IliskiID" ColumnName="IliskiID" />
+                <ScalarProperty Name="OperasyonID" ColumnName="OperasyonID" />
+                <ScalarProperty Name="OnculOperasyonID" ColumnName="OnculOperasyonID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Operasyonlar">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.Tbl_Operasyonlar">
+              <MappingFragment StoreEntitySet="Tbl_Operasyonlar">
+                <ScalarProperty Name="Aciklama" ColumnName="Aciklama" />
+                <ScalarProperty Name="OperasyonID" ColumnName="OperasyonID" />
+                <ScalarProperty Name="ProjeID" ColumnName="ProjeID" />
+                <ScalarProperty Name="OperasyonKodu" ColumnName="OperasyonKodu" />
+                <ScalarProperty Name="Tanim" ColumnName="Tanim" />
+                <ScalarProperty Name="Sure" ColumnName="Sure" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Projeler">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.Tbl_Projeler">
+              <MappingFragment StoreEntitySet="Tbl_Projeler">
+                <ScalarProperty Name="ProjeID" ColumnName="ProjeID" />
+                <ScalarProperty Name="ProjeAdi" ColumnName="ProjeAdi" />
+                <ScalarProperty Name="Aciklama" ColumnName="Aciklama" />
+                <ScalarProperty Name="OlusturmaTarihi" ColumnName="OlusturmaTarihi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="DbHatDengelemeKDSModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
